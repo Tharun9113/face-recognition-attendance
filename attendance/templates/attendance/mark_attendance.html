@@ -1,0 +1,34 @@
+{% extends 'attendance/base.html' %}
+
+{% block title %}Mark Attendance - Face Recognition Attendance{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Mark Attendance</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Instructions:
+                    <ul class="mt-2">
+                        <li>Click the button below to start face recognition</li>
+                        <li>Students should stand in front of the camera one by one</li>
+                        <li>Press 'q' to stop the camera</li>
+                        <li>Attendance will be automatically marked for recognized students</li>
+                    </ul>
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-camera"></i> Start Face Recognition
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

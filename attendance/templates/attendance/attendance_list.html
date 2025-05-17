@@ -1,0 +1,57 @@
+{% extends 'attendance/base.html' %}
+
+{% block title %}Attendance Records - Face Recognition Attendance{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">Attendance Records</h4>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        {% if user.profile.is_teacher %}
+                            <th>Student</th>
+                        {% endif %}
+                        <th>Status</th>
+                        {% if user.profile.is_teacher %}
+                            <th>Marked By</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for attendance in attendances %}
+                        <tr>
+                            <td>{{ attendance.date }}</td>
+                            <td>{{ attendance.time }}</td>
+                            {% if user.profile.is_teacher %}
+                                <td>{{ attendance.student.profile.user.username }}</td>
+                            {% endif %}
+                            <td>
+                                {% if attendance.status %}
+                                    <span class="badge bg-success">Present</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Absent</span>
+                                {% endif %}
+                            </td>
+                            {% if user.profile.is_teacher %}
+                                <td>{{ attendance.marked_by.profile.user.username }}</td>
+                            {% endif %}
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="{% if user.profile.is_teacher %}5{% else %}3{% endif %}" class="text-center">
+                                No attendance records found.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %} 

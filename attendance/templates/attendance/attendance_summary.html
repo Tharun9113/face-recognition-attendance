@@ -1,0 +1,54 @@
+{% extends 'attendance/base.html' %}
+
+{% block title %}Attendance Summary - Face Recognition Attendance{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Attendance Summary</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Roll Number</th>
+                                <th>Department</th>
+                                <th>Total Classes</th>
+                                <th>Present</th>
+                                <th>Attendance %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in summary %}
+                            <tr>
+                                <td>{{ item.student.profile.user.username }}</td>
+                                <td>{{ item.student.roll_number }}</td>
+                                <td>{{ item.student.department }}</td>
+                                <td>{{ item.total_attendance }}</td>
+                                <td>{{ item.present_count }}</td>
+                                <td>
+                                    <div class="progress">
+                                        <div class="progress-bar {% if item.attendance_percentage >= 75 %}bg-success{% elif item.attendance_percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                             role="progressbar" 
+                                             style="width: {{ item.attendance_percentage }}%"
+                                             aria-valuenow="{{ item.attendance_percentage }}" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100">
+                                            {{ item.attendance_percentage|floatformat:1 }}%
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

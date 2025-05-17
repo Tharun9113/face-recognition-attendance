@@ -1,0 +1,26 @@
+{% extends 'attendance/base.html' %}
+
+{% block title %}View Profile - Face Recognition Attendance{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Teacher Profile</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Personal Information</h5>
+                        <p><strong>Username:</strong> {{ teacher.profile.user.username }}</p>
+                        <p><strong>Email:</strong> {{ teacher.profile.user.email }}</p>
+                        <p><strong>Department:</strong> {{ teacher.department }}</p>
+                        <p><strong>Designation:</strong> {{ teacher.designation }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

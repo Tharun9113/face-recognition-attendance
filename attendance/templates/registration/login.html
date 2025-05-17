@@ -1,0 +1,117 @@
+{% extends 'attendance/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Welcome - Face Recognition Attendance{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+            <h1 class="display-4 text-primary">Welcome to Face Recognition Attendance</h1>
+            <p class="lead text-muted">Login to access your attendance dashboard</p>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Login</h4>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if message.tags == 'error' %}
+                                <div class="alert alert-danger">
+                                    {{ message }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    <form method="post" autocomplete="off">
+                        {% csrf_token %}
+                        <input type="text" name="fakeusernameremembered" style="display:none">
+                        <input type="password" name="fakepasswordremembered" style="display:none">
+                        <div class="form-group mb-3">
+                            <label>Login as</label><br>
+                            <input type="radio" id="login_student" name="role" value="student" required>
+                            <label for="login_student">Student</label>
+                            <input type="radio" id="login_teacher" name="role" value="teacher" required>
+                            <label for="login_teacher">Teacher</label>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="id_user_login">Username</label>
+                            <input type="text" name="username" id="id_user_login" class="form-control {% if messages %}is-invalid{% endif %}" required autocomplete="off">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="id_user_pass">Password</label>
+                            <input type="password" name="password" id="id_user_pass" class="form-control {% if messages %}is-invalid{% endif %}" required autocomplete="off">
+                        </div>
+                        {% if next %}
+                            <input type="hidden" name="next" value="{{ next }}">
+                        {% endif %}
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-primary w-100">Login</button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-4">
+                        <p class="mb-2">Don't have an account? <a href="{% url 'register' %}" class="text-primary">Register here</a></p>
+                        <p><a href="{% url 'password_reset' %}" class="text-muted">Forgot your password?</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background-color: #f8f9fc;
+    }
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    }
+    .card-header {
+        border-radius: 10px 10px 0 0;
+    }
+    .btn-primary {
+        padding: 0.75rem;
+        font-weight: 600;
+    }
+    .display-4 {
+        font-weight: 600;
+    }
+    /* Clear autofill styles */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 30px white inset !important;
+    }
+    .is-invalid {
+        border-color: #dc3545;
+    }
+    .is-invalid:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+    .alert {
+        border-radius: 5px;
+        margin-bottom: 1rem;
+    }
+    .alert-error {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add any necessary JavaScript here
+</script>
+{% endblock %} 

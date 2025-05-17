@@ -1,0 +1,184 @@
+{% extends 'attendance/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Face Registration - Face Recognition Attendance{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Face Registration</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Please register your face using one of the following methods:
+                    <ul class="mt-2">
+                        <li>Use live camera capture (recommended)</li>
+                        <li>Upload a clear photo of your face</li>
+                    </ul>
+                    <p class="mb-0">Make sure:
+                        <ul>
+                            <li>Your face is clearly visible</li>
+                            <li>There is good lighting</li>
+                            <li>You are looking directly at the camera</li>
+                            <li>There are no other faces in the image</li>
+                        </ul>
+                    </p>
+                </div>
+
+                <!-- Live Camera Capture -->
+                <div class="mb-4">
+                    <h5>Live Camera Capture</h5>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <video id="video" class="img-fluid rounded" autoplay></video>
+                            <canvas id="canvas" style="display: none;"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-grid gap-2">
+                                <button id="startCamera" class="btn btn-primary">
+                                    <i class="fas fa-camera"></i> Start Camera
+                                </button>
+                                <button id="capture" class="btn btn-success" disabled>
+                                    <i class="fas fa-camera-retro"></i> Capture Photo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Upload -->
+                <div class="mb-4">
+                    <h5>Upload Photo</h5>
+                    <form method="POST" enctype="multipart/form-data" autocomplete="off" id="uploadForm">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <input type="file" name="face_image" id="id_face_image" accept="image/*" class="form-control" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary w-100">Register Face</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="face-capture-success" class="alert alert-success" style="display:none;">
+    Image captured successfully!
+</div>
+<div id="face-upload-success" class="alert alert-success" style="display:none;">
+    Image uploaded successfully!
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const startButton = document.getElementById('startCamera');
+    const captureButton = document.getElementById('capture');
+    const uploadForm = document.getElementById('uploadForm');
+    let stream = null;
+
+    // Start camera
+    startButton.addEventListener('click', async function() {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    facingMode: 'user',
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                } 
+            });
+            video.srcObject = stream;
+            startButton.disabled = true;
+            captureButton.disabled = false;
+        } catch (err) {
+            console.error('Error accessing camera:', err);
+            alert('Error accessing camera. Please make sure you have granted camera permissions.');
+        }
+    });
+
+    // Capture photo
+    captureButton.addEventListener('click', function() {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        
+        // Convert canvas to blob
+        canvas.toBlob(function(blob) {
+            const file = new File([blob], 'face_capture.jpg', { type: 'image/jpeg' });
+            
+            // Create a new FormData and append the file
+            const formData = new FormData(uploadForm);
+            formData.set('face_image', file);
+            
+            // Submit the form
+            fetch(uploadForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    sessionStorage.setItem('faceCaptureSuccess', '1');
+                    window.location.reload();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error uploading photo. Please try again.');
+            });
+        }, 'image/jpeg', 0.95);
+    });
+
+    // Intercept upload form submit to set flag
+    uploadForm.addEventListener('submit', function() {
+        sessionStorage.setItem('faceUploadSuccess', '1');
+    });
+
+    // Show success message if face was captured
+    if (sessionStorage.getItem('faceCaptureSuccess')) {
+        document.getElementById('face-capture-success').style.display = 'block';
+        sessionStorage.removeItem('faceCaptureSuccess');
+    }
+    // Show success message if face was uploaded
+    if (sessionStorage.getItem('faceUploadSuccess')) {
+        document.getElementById('face-upload-success').style.display = 'block';
+        sessionStorage.removeItem('faceUploadSuccess');
+    }
+
+    // Stop camera when leaving page
+    window.addEventListener('beforeunload', function() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+    });
+});
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    #video {
+        width: 100%;
+        max-width: 640px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+    }
+    .btn {
+        margin-bottom: 10px;
+    }
+    .btn:disabled {
+        cursor: not-allowed;
+    }
+</style>
+{% endblock %} 

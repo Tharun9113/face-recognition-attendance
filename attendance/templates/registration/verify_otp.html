@@ -1,0 +1,87 @@
+{% extends 'attendance/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Verify OTP - Face Recognition Attendance{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+            <h1 class="display-4 text-primary">Verify OTP</h1>
+            <p class="lead text-muted">Enter the OTP sent to your email</p>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Reset Password</h4>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <form method="post" action="{% url 'verify_otp' %}" autocomplete="off">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <label for="email">Email Address</label>
+                            <input type="email" name="email" class="form-control" id="email" value="{{ email }}" readonly required autocomplete="off">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="otp">OTP Code</label>
+                            <input type="text" name="otp" class="form-control" id="otp" pattern="[0-9]{6}" maxlength="6" required autofocus autocomplete="off">
+                            <small class="text-muted">Enter the 6-digit code sent to your email</small>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="new_password">New Password</label>
+                            <input type="password" name="new_password" class="form-control" id="new_password" minlength="8" required autocomplete="off">
+                            <small class="text-muted">Password must be at least 8 characters long</small>
+                        </div>
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-primary w-100">Reset Password</button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-4">
+                        <p><a href="{% url 'password_reset' %}" class="text-muted">Request New OTP</a></p>
+                        <p><a href="{% url 'login' %}" class="text-muted">Back to Login</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+    body {
+        background-color: #f8f9fc;
+    }
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    }
+    .card-header {
+        border-radius: 10px 10px 0 0;
+    }
+    .btn-primary {
+        padding: 0.75rem;
+        font-weight: 600;
+    }
+    .display-4 {
+        font-weight: 600;
+    }
+    /* Prevent autofill background */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 30px white inset !important;
+    }
+</style>
+{% endblock %}
+{% endblock %} 
