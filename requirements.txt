@@ -1,4 +1,4 @@
-Django==5.0.2
+Django==3.2
 gunicorn
 dj-database-url
 whitenoise
@@ -8,4 +8,6 @@ opencv-python
 face-recognition
 numpy
 Pillow
-python-dotenv 
+python-dotenv
+psycopg2-binary
+mysqlclient 
