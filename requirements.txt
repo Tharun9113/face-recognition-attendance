@@ -1,0 +1,11 @@
+Django==5.0.2
+gunicorn
+dj-database-url
+whitenoise
+crispy-bootstrap5
+django-crispy-forms
+opencv-python
+face-recognition
+numpy
+Pillow
+python-dotenv 
