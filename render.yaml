@@ -19,6 +19,19 @@ services:
         fromDatabase:
           name: mydb
           property: connectionString
+      # MongoDB Atlas variables
+      - key: MONGODB_URI
+        value: mongodb+srv://tharunkumar9113:Tharun9535@facerecognition.0arqyns.mongodb.net/?retryWrites=true&w=majority&appName=facerecognition
+      - key: MONGODB_NAME
+        value: attendance_db
+      - key: MONGODB_USERNAME
+        value: tharunkumar9113
+      - key: MONGODB_PASSWORD
+        value: Tharun9535
+      - key: EMAIL_HOST_USER
+        value: tharunkumar9113@gmail.com
+      - key: EMAIL_HOST_PASSWORD
+        value: kyfc uirt oikl fgcs
 
 databases:
   - name: mydb
